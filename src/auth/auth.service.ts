@@ -18,7 +18,9 @@ export class AuthService {
     );
 
     if (user.role != 'admin') {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException({
+        message: 'Only admin users are allowed',
+      });
     }
 
     const IsPasswordValid = compareSync(password, user.password);
