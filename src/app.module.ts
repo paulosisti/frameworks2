@@ -1,4 +1,3 @@
-import { ConfigModule } from '@nestjs/config';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from './users/users.module';
@@ -9,8 +8,9 @@ import { OwnersModule } from './owners/owners.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ envFilePath: `.env` }),
-    MongooseModule.forRoot(process.env.MONGO_URI),
+    MongooseModule.forRoot(
+      'mongodb+srv://paulo1234:paulo1234@sisticluster.rsm8agc.mongodb.net/test',
+    ),
     UsersModule,
     AuthModule,
     PokemonsModule,
