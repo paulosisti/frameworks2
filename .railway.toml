@@ -1,0 +1,21 @@
+# Nome do seu aplicativo no Railway
+name = "frameworks2"
+
+# Buildpack para ser utilizado pelo Railway
+# Esse buildpack é específico para o NestJS com MongoDB
+# Certifique-se de que tenha selecionado a versão correta para a sua aplicação
+[build]
+  image = "railwayapp/node:18-mongodb"
+
+# Definições de ambiente necessárias para o aplicativo
+[env]
+  NODE_ENV = "production"
+  MONGODB_URI = "mongodb+srv://paulo1234:paulo1234@sisticluster.rsm8agc.mongodb.net/test"
+  PORT = 3000
+
+# Comandos necessários para iniciar o aplicativo
+# Neste caso, é necessário rodar o script de build do NestJS
+# E em seguida o comando de start
+# Certifique-se de que esses comandos sejam adequados para a sua aplicação
+[deploy]
+  command = "npm run build && npm start"
