@@ -2,7 +2,7 @@
 FROM node:14-alpine
 
 # Crie e defina o diretório de trabalho para o aplicativo
-WORKDIR /app
+WORKDIR /src
 
 # Copie os arquivos necessários para o diretório de trabalho
 COPY package*.json ./

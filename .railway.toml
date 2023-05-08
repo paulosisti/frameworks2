@@ -5,7 +5,7 @@ name = "frameworks2"
 # Esse buildpack é específico para o NestJS com MongoDB
 # Certifique-se de que tenha selecionado a versão correta para a sua aplicação
 [build]
-  image = "railwayapp/node:18-mongodb"
+  image = "railwayapp/node:14-mongodb"
 
 # Definições de ambiente necessárias para o aplicativo
 [env]
