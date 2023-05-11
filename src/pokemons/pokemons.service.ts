@@ -4,6 +4,7 @@ import { UpdatePokemonDto } from './dto/update-pokemon.dto';
 import { Pokemon, PokemonDocument } from './entities/pokemon.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
+import { GetPokemonsFilterDto } from './dto/get-pokemon-filter.dto';
 
 @Injectable()
 export class PokemonsService {
@@ -18,6 +19,21 @@ export class PokemonsService {
 
   async findAll() {
     return await this.pokemonModel.find();
+  }
+
+  async getPkemonsWithFilters(
+    filterDto: GetPokemonsFilterDto,
+  ): Promise<Pokemon[]> {
+    const { pokemonType } = filterDto;
+
+    let pokemons = await this.pokemonModel.find();
+
+    if (pokemonType) {
+      pokemons = pokemons.filter(
+        (pokemon) => pokemon.pokemonType === pokemonType,
+      );
+    }
+    return pokemons;
   }
 
   async findOne(id: string) {

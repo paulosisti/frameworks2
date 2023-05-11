@@ -9,11 +9,14 @@ import {
   BadRequestException,
   NotFoundException,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { PokemonsService } from './pokemons.service';
 import { CreatePokemonDto } from './dto/create-pokemon.dto';
 import { UpdatePokemonDto } from './dto/update-pokemon.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { GetPokemonsFilterDto } from './dto/get-pokemon-filter.dto';
+import { Pokemon } from './entities/pokemon.entity';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('pokemons')
@@ -30,11 +33,11 @@ export class PokemonsController {
   }
 
   @Get()
-  async findAll() {
-    try {
+  async findAll(@Query() filterDto: GetPokemonsFilterDto): Promise<Pokemon[]> {
+    if (Object.keys(filterDto).length) {
+      return await this.pokemonsService.getPkemonsWithFilters(filterDto);
+    } else {
       return await this.pokemonsService.findAll();
-    } catch (e) {
-      throw new BadRequestException(e.message);
     }
   }
 
