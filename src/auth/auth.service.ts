@@ -1,10 +1,13 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compareSync } from 'bcrypt';
 import * as admin from 'firebase-admin';
+import * as path from 'path';
 import { UsersService } from '../users/users.service';
-import { firebaseConfig } from './firebase.config';
+
+const serviceAccount = require(path.resolve('firebaseconfig.json'));
 
 @Injectable()
 export class AuthService {
@@ -15,7 +18,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {
     this.firebaseAdmin = admin.initializeApp({
-      credential: admin.credential.cert(firebaseConfig),
+      credential: admin.credential.cert(serviceAccount),
     });
   }
 
