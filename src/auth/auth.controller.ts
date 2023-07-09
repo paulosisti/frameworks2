@@ -1,5 +1,6 @@
-import { Controller, Post, UseGuards, Req } from '@nestjs/common';
+import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { CreateFirebaseUserDto } from './create-firebase-user.dto';
 import { LocalAuthGuard } from './local-auth.guard';
 
 @Controller()
@@ -10,5 +11,11 @@ export class AppController {
   @Post('auth/login')
   async login(@Req() req: any) {
     return await this.authService.login(req.user);
+  }
+
+  @Post('users')
+  async createUser(@Body() createFirebaseUserDto: CreateFirebaseUserDto) {
+    const { email, password } = createFirebaseUserDto;
+    await this.authService.createUserInFirebaseAuth(email, password);
   }
 }

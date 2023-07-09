@@ -1,15 +1,23 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { compareSync } from 'bcrypt';
+import * as admin from 'firebase-admin';
+import { firebaseConfig } from 'firebase.config';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class AuthService {
+  private firebaseAdmin: admin.app.App;
+
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
-  ) {}
+  ) {
+    this.firebaseAdmin = admin.initializeApp({
+      credential: admin.credential.cert(firebaseConfig),
+    });
+  }
 
   async validateUser(username: string, password: string) {
     const user = await this.usersService.findByUsernamePassword(
@@ -34,5 +42,18 @@ export class AuthService {
     return {
       access_token: this.jwtService.sign(payload),
     };
+  }
+
+  async createUserInFirebaseAuth(email: string, password: string) {
+    try {
+      const userRecord = await this.firebaseAdmin.auth().createUser({
+        email,
+        password,
+        // Outras informações opcionais do usuário
+      });
+      return userRecord;
+    } catch (error) {
+      // Trate o erro, se necessário
+    }
   }
 }
