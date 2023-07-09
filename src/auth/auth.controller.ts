@@ -13,7 +13,7 @@ export class AppController {
     return await this.authService.login(req.user);
   }
 
-  @Post('users')
+  @Post('auth/users')
   async createUser(@Body() createFirebaseUserDto: CreateFirebaseUserDto) {
     const { email, password } = createFirebaseUserDto;
     await this.authService.createUserInFirebaseAuth(email, password);
