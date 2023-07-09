@@ -3,8 +3,8 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compareSync } from 'bcrypt';
 import * as admin from 'firebase-admin';
-import { firebaseConfig } from 'firebase.config';
 import { UsersService } from '../users/users.service';
+import { firebaseConfig } from './firebase.config';
 
 @Injectable()
 export class AuthService {
