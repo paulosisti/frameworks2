@@ -6,12 +6,13 @@ import { compareSync } from 'bcrypt';
 import * as admin from 'firebase-admin';
 import * as path from 'path';
 import { UsersService } from '../users/users.service';
+import { CreateFirebaseUserDto } from './create-firebase-user.dto';
 
 const serviceAccount = require(path.resolve('firebaseconfig.json'));
 
 @Injectable()
 export class AuthService {
-  private firebaseAdmin: admin.app.App;
+  private readonly firebaseAdmin: admin.app.App;
 
   constructor(
     private usersService: UsersService,
@@ -47,27 +48,26 @@ export class AuthService {
     };
   }
 
-  async createUserInFirebaseAuth(email: string, password: string) {
-    try {
-      // Verificar se o usuário já existe
-      const existingUser = await this.firebaseAdmin
-        .auth()
-        .getUserByEmail(email);
-      if (existingUser) {
-        throw new Error('Usuário já existe');
-      }
-
-      // Criar o novo usuário
+  async createUserInFirebaseAuth(createFirebaseUserDto: CreateFirebaseUserDto) {
+    const userExists = await this.emailExists(createFirebaseUserDto.email);
+    if (!userExists) {
       const userRecord = await this.firebaseAdmin.auth().createUser({
-        email,
-        password,
-        // Outras informações opcionais do usuário
+        ...createFirebaseUserDto,
       });
-
       return userRecord;
+    } else {
+      throw Error(`Ops... User already exists`);
+    }
+  }
+
+  async emailExists(email: string): Promise<boolean> {
+    try {
+      await this.firebaseAdmin.auth().getUserByEmail(email);
+      // Se não houver exceção, o e-mail existe
+      return true;
     } catch (error) {
-      // Trate o erro, se necessário
-      throw new Error('Erro ao criar usuário no Firebase Auth');
+      // Se ocorrer uma exceção, o e-mail não existe
+      return false;
     }
   }
 }

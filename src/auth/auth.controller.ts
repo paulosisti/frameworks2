@@ -1,4 +1,11 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateFirebaseUserDto } from './create-firebase-user.dto';
 import { LocalAuthGuard } from './local-auth.guard';
@@ -15,7 +22,12 @@ export class AppController {
 
   @Post('auth/users')
   async createUser(@Body() createFirebaseUserDto: CreateFirebaseUserDto) {
-    const { email, password } = createFirebaseUserDto;
-    return await this.authService.createUserInFirebaseAuth(email, password);
+    try {
+      return await this.authService.createUserInFirebaseAuth(
+        createFirebaseUserDto,
+      );
+    } catch (e) {
+      throw new BadRequestException(e.message);
+    }
   }
 }
