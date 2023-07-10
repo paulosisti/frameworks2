@@ -1,17 +1,17 @@
 import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
   BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
   NotFoundException,
+  Param,
+  Patch,
+  Post,
 } from '@nestjs/common';
-import { OwnersService } from './owners.service';
 import { CreateOwnerDto } from './dto/create-owner.dto';
 import { UpdateOwnerDto } from './dto/update-owner.dto';
+import { OwnersService } from './owners.service';
 
 @Controller('owners')
 export class OwnersController {
@@ -21,6 +21,18 @@ export class OwnersController {
   async create(@Body() createOwnerDto: CreateOwnerDto) {
     try {
       return await this.ownersService.create(createOwnerDto);
+    } catch (e) {
+      throw new BadRequestException(e.message);
+    }
+  }
+
+  @Post(':ownerId/addPokemon')
+  async addPokemonToOwner(
+    @Param('ownerId') ownerId: string,
+    @Body('pokemonId') pokemonId: string,
+  ) {
+    try {
+      return await this.ownersService.addOwner(ownerId, pokemonId);
     } catch (e) {
       throw new BadRequestException(e.message);
     }
