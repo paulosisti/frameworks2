@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { CreateOwnerDto } from './dto/create-owner.dto';
 import { UpdateOwnerDto } from './dto/update-owner.dto';
 import { Owner, OwnerDocument } from './entities/owner.entity';
@@ -60,12 +60,14 @@ export class OwnersService {
   }
 
   async addOwner(ownerId: string, pokemonId: string) {
+    const ObjectId = mongoose.Types.ObjectId;
     return await this.ownerModel.findByIdAndUpdate(
       ownerId,
-      { $addToSet: { pokemons: pokemonId } },
+      { $addToSet: { pokemons: new ObjectId(pokemonId) } },
       { new: true },
     );
   }
+
   removeOwner(ownerId: string, pokemonId: string) {
     return this.ownerModel.findByIdAndUpdate(
       ownerId,
