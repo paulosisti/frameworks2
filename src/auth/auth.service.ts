@@ -49,14 +49,25 @@ export class AuthService {
 
   async createUserInFirebaseAuth(email: string, password: string) {
     try {
+      // Verificar se o usuário já existe
+      const existingUser = await this.firebaseAdmin
+        .auth()
+        .getUserByEmail(email);
+      if (existingUser) {
+        throw new Error('Usuário já existe');
+      }
+
+      // Criar o novo usuário
       const userRecord = await this.firebaseAdmin.auth().createUser({
         email,
         password,
         // Outras informações opcionais do usuário
       });
+
       return userRecord;
     } catch (error) {
       // Trate o erro, se necessário
+      throw new Error('Erro ao criar usuário no Firebase Auth');
     }
   }
 }
