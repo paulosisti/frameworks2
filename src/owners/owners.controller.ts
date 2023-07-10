@@ -29,7 +29,7 @@ export class OwnersController {
   @Post(':ownerId/addPokemon')
   async addPokemonToOwner(
     @Param('ownerId') ownerId: string,
-    @Body('pokemonId') pokemonId: string,
+    @Body('pokemonId') pokemonId: any,
   ) {
     try {
       return await this.ownersService.addOwner(ownerId, pokemonId);

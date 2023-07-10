@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { PokemonsService } from 'src/pokemons/pokemons.service';
 import { CreateOwnerDto } from './dto/create-owner.dto';
 import { UpdateOwnerDto } from './dto/update-owner.dto';
 import { Owner, OwnerDocument } from './entities/owner.entity';
@@ -9,6 +10,7 @@ import { Owner, OwnerDocument } from './entities/owner.entity';
 export class OwnersService {
   constructor(
     @InjectModel(Owner.name) private ownerModel: Model<OwnerDocument>,
+    private pokemonsService: PokemonsService,
   ) {}
 
   async create(createOwnerDto: CreateOwnerDto) {
@@ -59,12 +61,16 @@ export class OwnersService {
     return deletedOwner;
   }
 
-  async addOwner(ownerId: string, pokemonId: string) {
-    return await this.ownerModel.findByIdAndUpdate(
-      ownerId,
-      { $addToSet: { pokemons: pokemonId } },
-      { new: true },
-    );
+  async addOwner(ownerId: string, pokemonId: any) {
+    const owner = await this.ownerModel.findById(ownerId);
+    if (!owner) {
+      throw new NotFoundException(`Owner with id ${ownerId} not found`);
+    }
+
+    const pokemonIds = pokemonId.pokemons.map((pokemon: any) => pokemon._id);
+    owner.pokemons.push(...pokemonIds);
+
+    return await owner.save();
   }
 
   removeOwner(ownerId: string, pokemonId: string) {
