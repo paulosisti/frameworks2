@@ -77,10 +77,10 @@ export class OwnersController {
     }
   }
 
-  @Delete(':ownerId/removePokemon')
+  @Patch(':ownerId/removePokemon')
   async removePokemonFromOwner(
     @Param('ownerId') ownerId: string,
-    @Body('pokemonId') pokemonId: any,
+    @Body('pokemonId') pokemonId: string,
   ) {
     try {
       return await this.ownersService.removeOwner(ownerId, pokemonId);
