@@ -76,4 +76,16 @@ export class OwnersController {
       throw new NotFoundException(e.message);
     }
   }
+
+  @Delete(':ownerId/removePokemon')
+  async removePokemonFromOwner(
+    @Param('ownerId') ownerId: string,
+    @Body('pokemonId') pokemonId: any,
+  ) {
+    try {
+      return await this.ownersService.removeOwner(ownerId, pokemonId);
+    } catch (e) {
+      throw new NotFoundException(e.message);
+    }
+  }
 }

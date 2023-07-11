@@ -78,13 +78,22 @@ export class OwnersService {
     return updatedOwner;
   }
 
-  removeOwner(ownerId: string, pokemonId: string) {
-    return this.ownerModel.findByIdAndUpdate(
-      ownerId,
-      { $pull: { pokemons: pokemonId } },
-      { new: true },
-    );
+  async removeOwner(ownerId: string, pokemonId: string) {
+    const updatedOwner = await this.ownerModel
+      .findByIdAndUpdate(
+        ownerId,
+        { $pull: { pokemons: pokemonId } },
+        { new: true },
+      )
+      .populate('pokemons');
+
+    if (!updatedOwner) {
+      throw new NotFoundException(`Owner with id ${ownerId} not found`);
+    }
+
+    return updatedOwner;
   }
+
   async getOwners(pokemonId: string) {
     const owner = await this.ownerModel
       .findById(pokemonId)
