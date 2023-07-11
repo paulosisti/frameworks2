@@ -70,7 +70,12 @@ export class OwnersService {
     const pokemonIds = pokemonId.pokemons.map((pokemon: any) => pokemon._id);
     owner.pokemons.push(...pokemonIds);
 
-    return await owner.save();
+    await owner.save();
+
+    const updatedOwner = await this.ownerModel
+      .findById(ownerId)
+      .populate('pokemons');
+    return updatedOwner;
   }
 
   removeOwner(ownerId: string, pokemonId: string) {
